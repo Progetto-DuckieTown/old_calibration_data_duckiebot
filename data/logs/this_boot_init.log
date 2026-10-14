@@ -1,0 +1,17 @@
++ echo 'Setting up the robot for this boot...'
+Setting up the robot for this boot...
++ cp /etc/avahi/services/dt.booting.service.disabled /etc/avahi/services/dt.booting.service
++ setup_etc_hosts
++ cat
+++ cat /etc/hostname
+++ cat /etc/hostname
++ dt-init-any-boot
++ rm -f /etc/avahi/services/dt.booting.service
++ dt-serve-triggers
++ store_event boot
++ type=boot
+++ date +%s%N
++ now=1718723858490638319
++ echo '{"type": "boot", "stamp": 1718723858490638319}'
++ echo 'Setting up completed!'
+Setting up completed!

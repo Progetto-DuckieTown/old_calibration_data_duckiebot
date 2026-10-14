@@ -1,0 +1,36 @@
+{
+    "base_disk_location": "disk_image/dt-hypriotos-rpi-v1.2.1.zip",
+    "base_disk_name": "dt-hypriotos-rpi-v1.2.1",
+    "base_disk_version": "1.2.1",
+    "environment": {
+        "commands_version": "daffy",
+        "hostname": "dan-IdeaPad-1-14IGL05",
+        "init_sd_card_version": "2.1.0",
+        "shell_version": "6.0.8",
+        "user": "dan"
+    },
+    "parameters": {
+        "country": "IT",
+        "device": "/dev/sda",
+        "experimental": false,
+        "gui": false,
+        "hostname": "duckicha",
+        "no_cache": false,
+        "no_steps": "",
+        "robot_configuration": "DB19",
+        "robot_type": "duckiebot",
+        "size": null,
+        "steps": "license,download,flash,setup",
+        "verify": false,
+        "wifi": "duckietown:***",
+        "workdir": "/tmp/duckietown/dts/init_sd_card"
+    },
+    "stamp": 1718473953.5101979,
+    "stamp_human": "2024-06-15T19:52:33.510203",
+    "steps": {
+        "download": true,
+        "flash": true,
+        "license": true,
+        "setup": true
+    }
+}

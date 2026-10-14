@@ -1,0 +1,130 @@
++ echo 'Setting up the robot for its first ever boot...'
+Setting up the robot for its first ever boot...
++ echo 'Setting up the environment...'
+Setting up the environment...
++ setup_etc_hosts
++ cat
+++ cat /etc/hostname
+++ cat /etc/hostname
++ cp /etc/avahi/services/dt.booting.service.disabled /etc/avahi/services/dt.booting.service
++ resize2fs /dev/mmcblk0p2
+resize2fs 1.44.5 (15-Dec-2018)
+Filesystem at /dev/mmcblk0p2 is mounted on /; on-line resizing required
+old_desc_blocks = 1, new_desc_blocks = 4
+The filesystem on /dev/mmcblk0p2 is now 7616768 (4k) blocks long.
+
++ partprobe
++ dt-sanitize-files
++ adduser --uid 1000 --gecos Duckietown --shell /bin/bash duckie
+Adding user `duckie' ...
+Adding new group `duckie' (1000) ...
+Adding new user `duckie' (1000) with group `duckie' ...
+Creating home directory `/home/duckie' ...
+Copying files from `/etc/skel' ...
+New password: Password change aborted.
+passwd: Authentication token manipulation error
+passwd: password unchanged
+Use of uninitialized value $answer in chop at /usr/sbin/adduser line 556.
+Use of uninitialized value $answer in pattern match (m//) at /usr/sbin/adduser line 557.
+Try again? [y/N] + echo duckie:quackquack
++ chpasswd
++ rm /home/duckie/.bash_prompt
++ echo 'duckie ALL=(ALL) NOPASSWD:ALL'
++ tee -a /etc/sudoers
+duckie ALL=(ALL) NOPASSWD:ALL
++ echo 'Setting up ssh...'
+Setting up ssh...
++ mkdir -p /home/duckie/.ssh
++ touch /home/duckie/.ssh/authorized_keys
++ echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFiaiFeU0Pc3ZjiGbjJOIx28ghcWPoem8jU1OSeJnbTkKT79vrzjIbYjkBg7uBlXb6kLnbHLWHUnPlLk2IUQTxHHvakubEJkJxePdN6XO+q1sKpEvz+1GL60iBKhRljCZ9h/CcJ78kkyNQkexHT15ZDMhOnUd8c9zxwUHxSjzPSOH5ns8bxjU3oSjmzDEojPnQJmY6Evhf5DVcKXenxkzs4XgDEo+ldKo37i30iUoFCL30OsXCP2tPcn1j39qjL7vnaUBO9WqY8eOssOHAX7/K1dNN1lDvNCKspq/2f05Ss8LopSpe6hOiMnPB0RlotJbZn+784kV1B4nJpqLj+EQr DT2018key'
++ tee -a /home/duckie/.ssh/authorized_keys
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFiaiFeU0Pc3ZjiGbjJOIx28ghcWPoem8jU1OSeJnbTkKT79vrzjIbYjkBg7uBlXb6kLnbHLWHUnPlLk2IUQTxHHvakubEJkJxePdN6XO+q1sKpEvz+1GL60iBKhRljCZ9h/CcJ78kkyNQkexHT15ZDMhOnUd8c9zxwUHxSjzPSOH5ns8bxjU3oSjmzDEojPnQJmY6Evhf5DVcKXenxkzs4XgDEo+ldKo37i30iUoFCL30OsXCP2tPcn1j39qjL7vnaUBO9WqY8eOssOHAX7/K1dNN1lDvNCKspq/2f05Ss8LopSpe6hOiMnPB0RlotJbZn+784kV1B4nJpqLj+EQr DT2018key
++ chmod 755 /home/duckie
++ chmod 700 /home/duckie/.ssh
++ chmod 600 /home/duckie/.ssh/authorized_keys
++ chown -R duckie:duckie /home/duckie
++ adduser duckie root
+Adding user `duckie' to group `root' ...
+Adding user duckie to group root
+Done.
++ echo 'Adding the user to the groups...'
+Adding the user to the groups...
++ adduser duckie docker
+Adding user `duckie' to group `docker' ...
+Adding user duckie to group docker
+Done.
++ adduser duckie users
+Adding user `duckie' to group `users' ...
+Adding user duckie to group users
+Done.
++ adduser duckie video
+Adding user `duckie' to group `video' ...
+Adding user duckie to group video
+Done.
++ echo 'Storing debug information...'
+Storing debug information...
++ cp /proc/buddyinfo /proc/cpuinfo /proc/meminfo /proc/pagetypeinfo /proc/slabinfo /proc/vmallocinfo /proc/zoneinfo /data/proc
++ cat /sys/class/net/eth0/address
++ cat /sys/class/net/wlan0/address
++ cp /etc/os-release /data/stats/os-release
++ echo 'Changing the ownership of the user directories...'
+Changing the ownership of the user directories...
++ chown -R 1000:1000 /data /code
++ chmod -R 775 /data /code
++ echo 'Setting up swap...'
+Setting up swap...
++ dd if=/dev/zero of=/swap0 bs=1M count=2048
+2048+0 records in
+2048+0 records out
+2147483648 bytes (2.1 GB, 2.0 GiB) copied, 265.296 s, 8.1 MB/s
++ chmod 0600 /swap0
++ mkswap /swap0
+Setting up swapspace version 1, size = 2 GiB (2147479552 bytes)
+no label, UUID=52a83130-f478-4760-bb73-f02e96a447b4
++ echo '/swap0 swap swap'
++ swapon -a
+++ free --mega
+++ awk '/^Mem:/{print $2}'
++ PHYMEM_SIZE=915
+++ python3 -c 'print(int(0.75 * 915))'
++ TMPFS_SIZE=686
++ echo 'tmpfs /data/ramdisk tmpfs  defaults,noatime,nosuid,nodev,noexec,mode=0777,size=686M 0 0'
++ systemctl daemon-reload
++ systemctl enable docker
+Synchronizing state of docker.service with SysV service script with /lib/systemd/systemd-sysv-install.
+Executing: /lib/systemd/systemd-sysv-install enable docker
++ systemctl restart docker
++ timeout --signal=INT 5s docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
++ dt-init-first-boot
++ echo 'Setting up the containers...'
+Setting up the containers...
++ dt-autoboot
+Launching 'duckietown' stack /data/autoboot/duckiebot.yaml...
+Creating volume "duckietown_portainer-data" with default driver
+Creating volume "duckietown_compose-data" with default driver
+Creating portainer ... 
+Creating device-proxy ... 
+Creating code-api     ... 
+Creating device-online ... 
+Creating duckiebot-interface ... 
+Creating rosbridge-websocket ... 
+Creating files-api           ... 
+Creating ros                 ... 
+Creating dashboard           ... 
+Creating car-interface       ... 
+Creating device-health       ... 
+[11A[2KCreating portainer           ... [32mdone[0m[11B[10A[2KCreating device-proxy        ... [32mdone[0m[10B[9A[2KCreating code-api            ... [32mdone[0m[9B[1A[2KCreating device-health       ... [32mdone[0m[1B[5A[2KCreating files-api           ... [32mdone[0m[5B[8A[2KCreating device-online       ... [32mdone[0m[8B[4A[2KCreating ros                 ... [32mdone[0m[4B[6A[2KCreating rosbridge-websocket ... [32mdone[0m[6B[2A[2KCreating car-interface       ... [32mdone[0m[2B[7A[2KCreating duckiebot-interface ... [32mdone[0m[7B[3A[2KCreating dashboard           ... [32mdone[0m[3BAutoboot stack should be now up!
++ store_event first_boot
++ type=first_boot
+++ date +%s%N
++ now=1718722105907589454
++ echo '{"type": "first_boot", "stamp": 1718722105907589454}'
++ mkdir -p /data/stats/usage/disk_image
++ mkdir -p /data/stats/usage/init_sd_card
+++ date +%s%N
++ cp /data/stats/disk_image/build.json /data/stats/usage/disk_image/1718722105925392579.json
+++ date +%s%N
++ cp /data/stats/init_sd_card/build.json /data/stats/usage/init_sd_card/1718722105944177319.json
++ echo 'Setting up completed!'
+Setting up completed!
